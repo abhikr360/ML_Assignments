@@ -1,0 +1,296 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage{mlsubmit}
+\usepackage{enumitem}
+\usepackage{breqn}
+\usepackage{amsmath}% mathtools includes this so this is optional
+\usepackage{mathtools}
+
+\begin{document}
+
+\initmlsubmision{3}                              					% assignment number
+{Abhishek Kumar}      						           		% your name
+{150035}																		% your roll number
+
+
+%-----------------------------------------------------Problem 1
+\begin{mlsolution}
+%\begin{enumerate}[label=\textbf{\arabic*}]
+%\item 
+%\end{enumerate}
+
+
+\textbf{Part I}\par
+Let us consider any $\theta^s,\ \forall s \in \mathbb{N}$. \\
+$$\text{Since } \theta^{\text{MLE}} \in \underset{\theta \in \Theta}{\arg\max}\ \P{X\cond\theta}$$
+$$ \implies \P{X\cond\theta^{\text{MLE}}} \geq \P{X\cond\theta^{\text{s}}} \ \forall s\in \mathbb{N}$$
+$$ \implies log\  \P{X\cond\theta^{\text{MLE}}} \geq log\  \P{X\cond\theta^{\text{s}}} \qquad\qquad{(a)} $$
+By slide 44-lec 16, we have 
+$$ log\  \P{X\cond\theta^{\text{s}}} \geq \mathbb{E}_{\vz \sim \P{\vz\cond X, \theta^{\text{MLE}}}} log\  \left[ \frac{\P{X, \vz\cond \theta^{s}}}{\P{\vz\cond X, \theta^{\text{MLE}}}}\right]  \qquad\qquad{(b)}$$
+Also by slide 42-lec 16, we have
+$$\mathbb{E}_{\vz \sim \P{\vz\cond X, \theta^{\text{MLE}}}} log\  \left[ \frac{\P{X, \vz\cond \theta^{MLE}}}{\P{\vz\cond X, \theta^{\text{MLE}}}}\right]  = log\  \P{X\cond\theta^{\text{MLE}}} \qquad\qquad{(c)}\ $$
+
+By (a), (b), (c) we have
+$$\mathbb{E}_{\vz \sim \P{\vz\cond X, \theta^{\text{MLE}}}} log\  \left[ \frac{\P{X, \vz\cond \theta^{MLE}}}{\P{\vz\cond X, \theta^{\text{MLE}}}}\right] \geq \mathbb{E}_{\vz \sim \P{\vz\cond X, \theta^{\text{MLE}}}} log\  \left[ \frac{\P{X, \vz\cond \theta^{s}}}{\P{\vz\cond X, \theta^{\text{MLE}}}}\right]  \forall s \in \mathbb{N}$$
+
+$$\implies \mathbb{E}_{\vz \sim \P{\vz\cond X, \theta^{\text{MLE}}}} log\ \ \P{X, \vz\cond \theta^{MLE}}  \geq \mathbb{E}_{\vz \sim \P{\vz\cond X, \theta^{\text{MLE}}}} log\  \P{X, \vz\cond \theta^{s}} \forall s \in \mathbb{N}$$
+
+Hence we have,
+$$\theta^{\text{MLE}} \in \underset{\theta \in \Theta}{\arg\max}\ Q_{\theta^{\text{MLE}}}(\theta)$$ $ \hfill \square $
+
+\textbf{Part II}\par
+
+Now suppose that after applying EM algorithm we reached $\theta^1$ which is a point of global maxima of $\P{X\cond\theta}$ after $i$ iterations, i.e. $\theta^1$ = $\theta^i$ . Using slide 44-lec 16 we have,
+$$log \ \P{X\cond\theta^{i+t}} \geq Q_{\theta^{1}}(\theta^{i+t}) \geq log \ \P{X\cond\theta^1} \ \forall t \geq 1$$
+But we know that $log\ \P{X\cond\theta^1} \geq log\ \P{X\cond\theta^{i+t}}$\\
+$$\implies log \ \P{X\cond\theta^{i+t}} = Q_{\theta^{1}}(\theta^{i+t}) =log\  \P{X\cond\theta^1} \ \forall t \geq 1  \qquad\qquad{(d)}$$
+Hence $\theta^{i+t}$ is also an MLE solution. Also we had not reached any MLE solution before $i$ iterations. If we had reached then we would have got stuck there. Thus $\theta^2$ is $\theta^{i+t}$ for some $t$ or $\theta^2$ is not reachable from $\theta^1$ using EM algorithm. \\
+Also by slide 43-lec 16 we know that EM algorithm never decreases log likelihood
+$$ Q_{\theta^{1}}(\theta^{i+t}) \geq Q_{\theta^{1}}(\theta^{1}) = log\  \P{X\cond\theta^1} \ \forall t \geq 1 $$
+
+Using Part I we have,
+$$\theta^{\text{1}} \in \underset{\theta \in \Theta}{\arg\max}\ Q_{\theta^{\text{1}}}(\theta)$$
+Any $\theta^\prime$ that satisfies equation (d) will be a maximizer for $Q_{\theta^{1}}(\theta)$.
+$$\implies \theta^{\text{t+i}} \in \underset{\theta \in \Theta}{\arg\max}\ Q_{\theta^{\text{1}}}(\theta)$$
+$$\implies \theta^{\text{2}} \in \underset{\theta \in \Theta}{\arg\max}\ Q_{\theta^{\text{1}}}(\theta)$$
+
+By using a symmetric argument when EM algorithm discovers $\theta^2$ before, we have 
+$$\implies \theta^{\text{1}} \in \underset{\theta \in \Theta}{\arg\max}\ Q_{\theta^{\text{2}}}(\theta)$$ $\hfill \square$
+
+\end{mlsolution}
+%--------------------------------------------------Problem 2
+
+\begin{mlsolution}
+An $n$-partition of a set $\cX$ is a collection of $n$ subsets $\bc{\cX_1,\ldots,\cX_n}$ such that each $\cX_i \subseteq \cX$ and
+\begin{itemize}
+	\item $\cX_i \cap \cX_j = \phi$ if $i \neq j$
+	\item $\bigcup_{i=1}^n \cX_i = \cX$
+\end{itemize}
+ A piecewise linear function $f: \bR^d \rightarrow \bR$ with $n > 0$ ``pieces'' is indexed by an $n$-partition $\bc{\Omega_1,\ldots,\Omega_n}$ of $\bR^d$ and $n$ linear models $\vw^1,\ldots,\vw^n$ such that for any $\vx \in \bR^d$, we have
+\[
+f(\vx) = \sum_{i=1}^n \ind{\vx \in \Omega_i}\cdot\ip{\vw^i}{\vx},
+\]
+where $\ind{E} = 1$ if $E$ is true and $0$ otherwise
+
+\textbf{Part I}\\
+Since $f$ is a piece wise linear function. Thus there exists an $n$-partition $\bc{\Omega_1,\ldots,\Omega_n}$ of $\bR^d$ and $n$ linear models $\vw^1,\ldots,\vw^n$ such that for any $\vx \in \bR^d$, we have
+\[
+f(\vx) = \sum_{i=1}^n \ind{\vx \in \Omega_i}\cdot\ip{\vw^i}{\vx},
+\]
+For $g(\vx)=c\cdot f(\vx)$ same paritions and $c\vw^1$ and will make it piece wise linear.
+\[
+g(\vx) = \sum_{i=1}^n \ind{\vx \in \Omega_i}\cdot\ip{c\vw^i}{\vx},
+\]
+
+Thus $g$ is also piecewise linear.$ \hfill \square $\\
+\textbf{Part II}\\
+Let $g$ be a piecewise linear function with $m$ partitions $\bc{\Omega_1^\prime,\ldots,\Omega_{m}^\prime}$ of $\bR^d$  and $m$ linear models $\vv^1,\ldots,\vv^m$ such that for any $\vx \in \bR^d$, we have
+\[
+g(\vx) = \sum_{i=1}^m \ind{\vx \in \Omega_i^\prime}\cdot\ip{\vv^i}{\vx},
+\]
+For $f + g$ Let's define partitions $\sigma_{ij} = \Omega_i \cap \Omega_j^\prime, \ i \in [n] ,\ j \in [m] $ and $\vu^{ij} = vw^i + vv^j$. Note that some of $\sigma$'s may be $\phi$ but that is not relevant. We can write
+\[
+(f+g)(\vx) = \sum_{i=1,j=1}^{n,m} \ind{\vx \in \sigma_{i,j}}\cdot\ip{\vw^i + \vv^j}{\vx},
+\]
+\[
+(f+g)(\vx) = \sum_{i=1,j=1}^{n,m} \ind{\vx \in \sigma_{i,j}}\cdot\ip{\vu^{ij}}{\vx},
+\]
+Thus $f+g$ is also piecewise linear.$ \hfill \square $\\
+\textbf{Part III}\\
+Let $f$ be a piecewise linear function as defined above.
+Let us break $\Omega_i = \Omega_{i1} \cup \Omega_{i2}$ and $\Omega_{i1} \cap \Omega_{i2} = \phi$ such that
+if $\Omega_{i1}$ the set where $\ip{\vw^i}{\vx} > 0$ and $\Omega_{i2}$ the set where $\ip{\vw^i}{\vx} \leq 0$.
+Let's set $\vw^{i1} \gets \vw$ and $\vw^{i2} \gets 0$.
+Then we can write
+\[
+g(\vx) = \sum_{i=1,j=1}^{n,2} \ind{\vx \in \Omega_{i,j}}\cdot\ip{\vw^{ij}}{\vx},
+\]
+Thus $g(\vx) = f_{ReLU}\left(f(\vx)\right)$ is also a piece wise linear function. $ \hfill \square $\\
+
+\textbf{Part IV}\\
+We will prove this by induction on number of hidden layers in neural network with ReLU activation function. We assume that output node has identity function. Also we assume that we have only one node as output node.
+\begin{itemize}
+\item \textbf{Base case} : If we have zero hidden layers then output is simply a weighted sum of all the inputs i.e
+$$f(\vx) = \sum_i \ip{\vw^i}{\vx^i}$$ This means it is linear in input hence piecewise linear (Here entire $\mathbb{R^D}$ is a partition).
+\item \textbf{Induction Step} :  We assume that if we have $i$ hidden layers in any network with ReLU activation function, then output is piecewise linear. Consider a network with ReLU activation function which has $i+1$ layers. Then by our assumption, the input to each node in $i+1^{th}$ layer is a piecewise linear function. From Part III, output of each node of $i+1^{th}$ layer is also piecewise linear. The final output node just takes a weighted sum of all the outputs of $i+1^{th}$ layer. Using Part I and Part II, the output of final node is also piecewise linear.
+\end{itemize}
+
+Thus output of any neural network with ReLU activation function and one output node is piecewise linear. Extension to neural network where ouput has $k$ nodes is trivial. In such situation each node will output piecewise linear function. $ \hfill \square $
+
+\textbf{Part V}\\
+We can write overall output of this network in following manner :
+\begin{align*}
+y = max\left(W_1 \cdot max\left(\sum_{i_1 = 1}^d w_{i_1} x_i ,0\right) +W_2 \cdot max\left(\sum_{i_2 = 1}^d w_{i_2} x_i ,0\right) \ldots W_D \cdot max\left(\sum_{i_D = 1}^d w_{i_D} x_i ,0\right) , 0 \right)
+\end{align*}
+where $w_{i_j}$ represents the weight of edge joining $i^{th}$ input node to $j^{th}$ hidden node and $W_k$ denote the weight of edge joining $k^{th}$ hidden node to output node.\par
+At each hidden node we get atmost 2 partitions. \\
+Now at output node we will get atmost $2\cdot 2\cdot \ldots D \text{ times} = 2^D$ partitions by our construction for Part 2. Thus we will have $$1 \leq \# \text{partitions in output } \leq 2^D$$
+\end{mlsolution}
+
+
+
+%--------------------------------------------------Problem 3
+\begin{mlsolution}
+
+
+\begin{mlalgorithm}[1.0\textwidth]{h!}{Online Kernel Perceptron Algorithm}\vskip-2ex
+	\begin{algorithmic}[1]
+		\REQUIRE A stream of data points
+		\STATE $S \gets \phi , b \gets 0 \in \mathbb{R}$ //Initialize an empty set
+		\STATE Receive a data point $x_i, y_i$\\
+		\hspace{0.5cm} (b) If $S$ is empty \\
+		\hspace{1.5cm} $\cdot$ $\alpha_i \gets y_i$ \\
+		\hspace{1.5cm} $\cdot$ $b \gets b + y_i$\\
+		\hspace{1.5cm} $ \cdot S \gets S \cup (x_i, \alpha_i)$\\
+		\hspace{0.5cm} (b) Else If $sign\left(\sum_{(\vx_j, \alpha_j) \in S}\ \alpha_j K(\vx_j, \vx_i) + b\right) \neq y_i $\\
+		\hspace{1.5cm} $\rightarrow$ If the point $x_i$ is already present in set $S$\\
+		\hspace{2cm} $\cdot$ $\alpha_i \gets y_i + \alpha_i $ \\
+		\hspace{2cm} $\cdot$ $b \gets b + y_i$\\
+		\hspace{1.5cm} $\rightarrow$ If the point $x_i$ is not present in set $S$ \\
+		\hspace{2cm} $\cdot$ $\alpha_i \gets y_i$ \\
+		\hspace{2cm} $\cdot$ $b \gets b + y_i$\\
+		\hspace{2cm} $S \gets S \cup (x_i, \alpha_i)$\\
+		\hspace{-0.8cm} \textbf{Output : } $S, b$
+	\end{algorithmic}
+\end{mlalgorithm}
+
+
+
+\end{mlsolution}
+%------------------------------------------------------Problem 4
+\begin{mlsolution}
+\textbf{Part I}\\
+We will set $\cH_K \equiv \bR^D$ for $D = 6$. An explicit construction for $\varphi: \bR^2 \rightarrow \cH_K$ is following : 
+
+$$\varphi\left(\vx = (x_1,x_2) \in \mathbb{R}^2\right) = \left[1\ \ \sqrt{2}x_1\ \ \sqrt{2}x_2\ \ x_1^2 \ \ \sqrt{2}x_1x_2\ \ x_2^2 \right]$$
+\textbf{Proof : } $\ip{\varphi(\vx)}{\varphi(\vy)} = 1+2x_1y_1+2x_2y_2+x_1^2y_1^2+2x_1x_2y_1y_2+x_2y_2^2$ and \\
+$$K(\vx,\vy) = (\ip{\vz^1}{\vz^2} + 1)^2 = 1+2x_1y_1+2x_2y_2+x_1^2y_1^2+2x_1x_2y_1y_2+x_2y_2^2 $$
+$$\implies K(\vx,\vy) = \ip{\varphi(\vx)}{\varphi(\vy)}$$
+Hence the kernel is mercer.
+
+\textbf{Part II}\\
+Let 
+\[
+ A = \begin{bmatrix}
+    a_{11} & a_{12} \\
+    a_{21} & x_{22} \\
+\end{bmatrix},
+b = \begin{bmatrix}
+    b_{1} & b_{2} \\
+\end{bmatrix}
+\]
+for a quadratic function $f_{(A,\vb,c)}(\vx) = \ip{\vz}{A\vx} + \ip{\vb}{\vx} + c$. Then 
+$$f_{(A,\vb,c)}(\vx) = a_{11}x_1^2 + (a_{12}+a_{21})x_1x_2 + a_{22}x_2^2 + b_1x_1 + b_2x_2 + c$$
+Corresponding $\vw \in \cH_K$ will be 
+$$ \vw = (c,\ \frac{b_1}{\sqrt{2}},\ \frac{b_2}{\sqrt{2}},\ a_{11},\ \frac{a_{12} + a_{21}}{\sqrt{2}},\ a_{22})$$
+\textbf{Part III}\\
+Let $\vw = (w_0,\ w_1,\ w_2,\ w_3,\ w_4,\ w_5)$ Then for $f_{(A,\vb,c)}(\vx)$ we have
+\[
+ A = \begin{bmatrix}
+    w_{3} & \frac{w_{4}}{\sqrt{2}} \\
+    \frac{w_{4}}{\sqrt{2}} & w_{5} \\
+\end{bmatrix},
+b = \begin{bmatrix}
+    \sqrt{2}w_{1} & \sqrt{2}w_{2} \\
+\end{bmatrix},  c = w_0
+\]
+
+
+\textbf{Part IV}
+
+Let's first see what is the value of minimum possible achievable error over dataset by any quadratic function over $\bR^2$
+$$\min_{(A,\vb,c) \in \bR^{2\times 2}\times\bR^2\times \bR}\ \sum_{i=1}^n(y^i - f_{(A,\vb,c)}(\vz^i))^2
+= \min_{\vw \in \cH_K}\ \sum_{i=1}^n(y^i - \ip{\vw}{\varphi_K(\vz^i)})^2$$ because by part 2 and part 3 every quadratic function has a corresponding $\vw$ and every $\vw$ has a quadratic function Let us denote $\varphi(z) = \varphi_K(z)$ for simplification.
+
+Let's denote $\vPhi  = \begin{bmatrix}
+    \varphi(z^1)\\
+    \varphi(z^2)\\
+    \ldots\\
+     \varphi(z^n) \\
+\end{bmatrix} \in \mathbb{R}^{n\times D}$ and $\vy  = \begin{bmatrix} 
+    y^1 & y^2 & \ldots y^n \\
+\end{bmatrix}^\top \in \mathbb{R}^n$
+\\
+By slide 10-lec 6 we have closed form solution
+$$\widehat{w} = (\vPhi^\top \vPhi )^{-1}\vPhi^\top \vy $$
+
+But note that $\vPhi^\top\vPhi$ = $G$ where $G_{ij} = K(x_i, x_j)$ what we usually call gram matrix.\\
+The error for this $\widehat{\vw}$ is 
+$$\sum_{i=1}^n\left(y^i - \ip{\widehat{\vw}}{\varphi_K(\vz^i)}\right)^2=\sum_{i=1}^n\left(y^i - \sum_{j=1}^n G_j^{-1}\vy K(\vz^j, \vz^i)\right)^2 $$
+
+Now let us see what is the error we will get when we use kernel ridge regression\\
+By slide 47-lec 18 we have 
+$$\vw = \sum_i^n \beta_i \phi(z^i) \text{ where } \beta = (G + \lambda\cdot I_n)^{-1}\vy$$
+
+Thus error with this $\vw$ is 
+$$ \sum_{i=1}^n\left(y^i - \sum_{j=1}^n (G + \lambda\cdot I_n)_j^{-1}\vy K(\vz^j, \vz^i)\right)^2 \qquad\qquad{(1)}$$
+
+Using the following identity of linear algebra \footnote{https://math.stackexchange.com/questions/17776/inverse-of-the-sum-of-matrices}
+\begin{align*}
+& (A+B)^{-1} = A^{-1} - \frac{1}{1+tr(BA^{-1})} A^{-1}BA^{-1} \text{ we have }\\
+& (G + \lambda\cdot I_n)^{-1} = G^{-1} - \frac{\lambda}{1+\lambda tr(G^{-1})} G^{-1}G^{-1}
+\end{align*}
+So, the error term becomes 
+$$ \sum_{i=1}^n\left(y^i - \sum_{j=1}^n \left(G^{-1} - \frac{\lambda}{1+\lambda tr(G^{-1})} G^{-1}G^{-1}\right)_j \vy K(\vz^j, \vz^i)\right)^2 $$
+
+$$ \implies \sum_{i=1}^n\left(y^i - \sum_{j=1}^n G^{-1}_j \vy K(\vz^j, \vz^i) + \frac{\lambda}{1+\lambda tr(G^{-1})} \sum_{j=1}^n  G^{-2}_j \vy K(\vz^j, \vz^i) \right)^2  \qquad\qquad{(2)}$$
+
+Let us look at the difference (2) - (1)
+
+$$ \implies \sum_{i=1}^n \left(  2\frac{\lambda}{1+\lambda tr(G^{-1})} \sum_{j=1}^n  G^{-2}_j \vy K(\vz^j, \vz^i)\left(y^i - \sum_{j=1}^n G^{-1}_j \vy K(\vz^j, \vz^i) \right) \right)$$
+
+$$ \implies \frac{2\lambda}{1+\lambda tr(G^{-1})}\sum_{i=1}^n \left(   \sum_{j=1}^n  G^{-2}_j \vy K(\vz^j, \vz^i)\left(y^i - \sum_{j=1}^n G^{-1}_j \vy K(\vz^j, \vz^i) \right) \right) $$
+
+This difference is the $\epsilon$ as mentioned in problem. And clearly we can see that 
+We will denote a $2$-dimensional vector as $\vz = (x,y) \in \bR^2$ where $x,y\in\bR$ are the coordinates of the point. Consider the quadratic kernel over these points
+\[
+K(\vz^1,\vz^2) = (\ip{\vz^1}{\vz^2} + 1)^2.
+\]
+Let $\cH_K$ denote the RKHS of the kernel $K$ and let $\varphi_K$ be the feature map for $K$. A quadratic function over $\bR^2$ is parameterized as $(A,\vb,c) \in \bR^{2\times 2}\times\bR^2\times \bR$ as 
+\[
+f_{(A,\vb,c)}(\vz) = \ip{\vz}{A\vz} + \ip{\vb}{\vz} + c
+\]
+\begin{enumerate}
+	\item Show that the kernel $K$ is Mercer by giving an explicit construction for $\varphi: \bR^2 \rightarrow \cH_K$. You will need to set $\cH_K \equiv \bR^D$ for an appropriate value of $D$. What $D$ did you choose?
+	\item For every quadratic function $f_{(A,\vb,c)}$ over $\bR^2$, construct a $\vw \in \cH_K$ such that for all $\vz \in \bR^2$
+	\[
+	f_{(A,\vb,c)}(\vz) = \ip{\vw}{\varphi_K(\vz)}
+	\]
+	\item For every $\vw \in \cH_K$, construct a triplet $(A,\vb,c) \in \bR^{2\times 2}\times\bR^2\times \bR$ such that for all $\vz \in \bR^2$
+	\[
+		f_{(A,\vb,c)}(\vz) = \ip{\vw}{\varphi_K(\vz)}
+	\]
+	\item Given a regression dataset $(Z,\vy) \in \bR^{2 \times n} \times \bR^n$, show that as the regularization parameter $\lambda \rightarrow 0^+$, the output of kernel ridge regression over $(Z,\vy)$ using the kernel $K$, is a quadratic function $\hat f$ over $\bR^2$ that offers a least squares error that is arbitrarily close to the smallest least squares error achievable over the dataset by any quadratic function over $\bR^2$ i.e.
+	\[
+	\sum_{i=1}^n(y^i - \hat f(\vz^i))^2 \leq \min_{(A,\vb,c) \in \bR^{2\times 2}\times\bR^2\times \bR}\ \sum_{i=1}^n(y^i - f_{(A,\vb,c)}(\vz^i))^2 + \epsilon
+	\]
+\end{enumerate}
+where $\epsilon \rightarrow 0$ as $\lambda \rightarrow 0^+$.
+
+\end{mlsolution}
+
+%--------------------------------------------------Problem 5
+
+\begin{mlsolution}
+The complete expression for data log likelihood is 
+\begin{equation}
+log \P{X\cond \mu,W,\sigma} = -\frac{nd}{2}log 2\pi -\frac{n}{2} log |C| - \frac{1}{2}\sum_{i=1}^{n}(\vx_i - \mu)^\top C^{-1}(\vx_i - \mu)
+\end{equation}
+where $C = WW^\top + \sigma^2\cdot I_d$\par
+
+$$ \mu^{\text{MLE}} = \underset{\vmu\in\bR^d}{\arg\max}\ \P{X\cond\mu,W,\sigma}$$
+Taking first order derivative with respect to $\mu$ and equating to zero
+\begin{flalign*}
+& \frac{d}{d\mu} \left(-\frac{nd}{2}log 2\pi -\frac{n}{2} log |C| - \frac{1}{2}\sum_{i=1}^{n}(\vx_i - \mu)^\top C^{-1}(\vx_i - \mu)\right) = 0\\
+& \frac{d}{d\mu} \left(- \frac{1}{2}\sum_{i=1}^{n}(\vx_i - \mu)^\top C^{-1}(\vx_i - \mu)\right) = 0 \\
+& 2\frac{1}{2} \sum_{i=1}^{n} C^{-1}(\vx_i - \mu) = 0 \\
+\end{flalign*}
+Multplying with $C$ both sides
+\begin{flalign*}
+ \sum_{i=1}^{n} (\vx_i - \mu) = 0
+\\ \mu = \frac{1}{n}\sum_{i=1}^{n}\vx_i 
+\end{flalign*}
+
+\end{mlsolution}
+					
+\end{document}
