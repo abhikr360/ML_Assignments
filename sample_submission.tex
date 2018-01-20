@@ -1,0 +1,203 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mlsubmit}
+
+\begin{document}
+
+\initmlsubmision{1}                              					% assignment number
+								{Abhishek Kumar}      						           		% your name
+								{150035}																		% your roll number
+
+\begin{mlsolution}
+\textbf{1.} $y=3x-1$
+
+\begin{figure}[th]%
+\begin{center}
+\includegraphics[scale=0.5]{q1_1}%
+\end{center}
+\caption{Question 1.1.1 decision boundary}%
+\label{fig:proto}%
+\end{figure}
+
+
+\textbf{2.} $x=\frac{1}{2}$
+
+\begin{figure}[th]%
+\begin{center}
+\includegraphics[scale=0.5]{q1_2}%
+\end{center}
+\caption{Question 1.1.2 decision boundary}%
+\label{fig:proto}%
+\end{figure}
+
+%\includegraphics[width=0.3\columnwidth]{proto_euclid_sample.png}%
+\end{mlsolution}
+
+\begin{mlsolution}
+\textbf{Likelihood : }\par 
+$ y^{i} \sim \mathcal{N}(\ip{\vw}{\vx^i}, \sigma^2)$ i.e.\par
+$f(y^{i} | (\vw, \vx^i) )= \frac{1}{\sqrt{2\pi\sigma^2}}e^{-(\frac{y^{i} -\ip{\vw}{\vx^i}}{2\sigma^2})} , i\in[d]$\par
+\vspace{1cm}
+\textbf{Prior : }\par 
+$f(\vw) = \frac{I(\vw)}{V_d}$ where\par
+\vspace{0.25cm} 
+$I(\vw) =\begin{cases} 1$ if $||w||_2 \leq r \\ 0$ otherwise $\end{cases}$ \par
+\vspace{0.25cm}
+$V_d = \frac{\pi^{\frac{n}{2}}}{\Gamma(\frac{n}{2} + 1)}r^{n}$ is the volume of $d$-dimensional sphere of radius $r$.
+
+ 
+\end{mlsolution}
+
+\begin{mlsolution}
+
+\textbf{Likelihood : }\par
+$f(y^{i} | (\vw, \vx^i) )= \frac{1}{\sqrt{2\pi\sigma^2}}e^{-(\frac{y^{i} -\ip{\vw}{\vx^i}}{2\sigma^2})} , i\in[d]$\par
+\vspace{0.25cm}
+
+Let $A$ be the diagonal matrix where $i^{th}$ diagonal element is $\frac{\alpha_i}{\sigma^2}$.\par
+$A = \begin{bmatrix}
+    \frac{\alpha_{1}}{\sigma^2} & & 0\\
+    & \ddots & \\
+    0 & & \frac{\alpha_{d}}{\sigma^2}
+  \end{bmatrix}$
+\vspace{0.25cm}\par
+\textbf{Prior : }\par
+$\vw \sim \mathcal{N}(\textbf{0}, A^{-1}) $ i.e. $f(\vw) = \frac{1}{\sqrt{|2\pi A^{-1}|}}e^{-\frac{1}{2}(\vw^{\top}A\vw)}$\par
+\vspace{0.25cm}
+\textbf{Solution :}\par
+$\hat{w}_{fr} = (\vX^{\top}\vX + \sigma^2 A)^{-1}\vX^{\top}\vy$
+
+\end{mlsolution}
+
+\begin{mlsolution}
+We have following two optimization problems : 
+\begin{align*}
+\bc{\widehat\vW, \{\hat\xi_i\}} = \underset{\vW,\bc{\xi_i}}{\arg\min}&\ \sum_{k=1}^K\norm{\vw^k}_2^2 + \sum_{i=1}^n\xi_i\\
+\text{s.t.} &\ \ip{\vw^{y^i}}{\vx^i} \geq \ip{\vw^k}{\vx^i} + 1 - \xi_i, \forall i, \forall k \neq y^i\qquad\qquad{(P1)}\\
+&\ \xi_i \geq 0, \text{ for all } i
+\end{align*}
+
+
+\[
+	\phantom{\hspace{20ex}}\widehat\vW = \underset{\vW}{\arg\min}\ \sum_{k=1}^K\norm{\vw^k}_2^2 + \sum_{i=1}^n\ell_\text{cs}(y^i,\veta^i)\qquad\qquad{(P2)},
+	\]
+	where $\veta^i = \ip{\vW}{\vx^i}$ and
+	\[
+	\ell_\text{cs}(y^i,\veta^i) = [1 + \max_{k \neq y}\veta^i_k - \veta^i_y]_+
+	\]
+\vspace{1cm}	
+
+\textbf{Proof : }\par
+\textbf{P1 $\implies$ P2}\par
+\vspace{0.25cm}
+Let ($\vW^{\circ}, \xi_i^{\circ}$)  is an optimizer for $(P1)$.\\
+\textbf{Claim : }$\xi_i^{\circ}$ must be equal to $l_\text{cs}(y^i,{\veta^i}^{\circ})$ where
+\begin{equation}
+{\veta^i}^{\circ} = \ip{\vW^{\circ}}{\vx^i}
+\end{equation}
+\textbf{Proof : }We already know that $\xi_i^{\circ} \geq l_\text{cs}(y^i,{\veta^i}^{\circ})$. Let's say that $\xi_i^{\circ} > l_\text{cs}(y^i,{\veta^i}^{\circ})$. Then we can always reduce $\xi_i^{\circ}$ to $l_\text{cs}(y^i,{\veta^i}^{\circ})$ to get a lower value for $(P2)$\hfill $\square$\par
+From above argument we conclude that the solution of $(P1)$ is always of the form ($\vW^{\circ}, \xi_i^{\circ}$) where $\xi_i^{\circ}$ satisfies following relation :
+\begin{align*}
+\xi_i^{\circ} = l_\text{cs}(y^i,{\veta^i}^{\circ})
+\end{align*}
+Thus our problem becomes
+This is exactly same as $(P2)$. Thus $\vW^{\circ}$ is also a minimizer for \, $(P2)$.\hfill $\square$
+
+\vspace{1cm}
+
+\textbf{P2 $\implies$ P1}\par
+\vspace{0.25cm}
+Let's say that $\widehat{\vW}$ is optimum for $(P2)$. Then
+\begin{equation*}
+\sum_{k=1}^K\norm{\widehat{\vw}^k}_2^2 + \sum_{i=1}^n\ell_\text{cs}(y^i,\widehat\veta^i) \leq  \sum_{k=1}^K\norm{\vw^k}_2^2 + \sum_{i=1}^n\ell_\text{cs}(y^i,\veta^i)\  \forall\  \vW \neq \widehat{\vW}
+\end{equation*}
+where $\widehat\veta^i = \ip{\widehat\vW}{\vx^i}$ and where $\veta^i = \ip{\vW}{\vx^i}$  
+and $\ell_\text{cs}(y^i,\widehat\veta^i) = [1 + \max_{k \neq y}\widehat\veta^i_k - \widehat\veta^i_y]_+$\\
+and $\ell_\text{cs}(y^i,\veta^i) = [1 + \max_{k \neq y}\veta^i_k - \veta^i_y]_+$
+
+$$\implies  \sum_{k=1}^K\norm{\vw^k}_2^2 -\sum_{k=1}^K\norm{\widehat{\vw}^k}_2^2  \geq \sum_{i=1}^n\ell_\text{cs}(y^i,\widehat\veta^i) - \sum_{i=1}^n\ell_\text{cs}(y^i,\veta^i)\qquad\qquad{(a)} $$
+\vspace{0.25cm}
+Now, We can rewrite the constraint of $(P1)$ as 
+\begin{equation*}
+\xi_i  \geq \ip{\vw^k}{\vx^i} - \ip{\vw^{y^i}}{\vx^i}+ 1 , \forall i, \forall k \neq y^i\end{equation*}
+which means that
+\begin{align*}
+\xi_i  & \geq \max_{k \neq y^i} (\ip{\vw^k}{\vx^i} - \ip{\vw^{y^i}}{\vx^i}) + 1\\
+\implies \xi_i  & \geq l_\text{cs}(y^i,\veta^i)\qquad\qquad{(1)}
+\end{align*}
+
+
+
+Let $\widehat{\xi_i} =l_\text{cs}(y^i,\widehat\veta^i) $ Then
+\begin{equation*}
+\sum_{i=1}^n\xi_i - \sum_{i=1}^nl_\text{cs}(y^i,\veta^i) \geq \sum_{i=1}^n\widehat{\xi_i} - \sum_{i=1}^nl_\text{cs}(y^i,\widehat\veta^i) \ \forall \{\xi_i\}\ and \ \veta^i  
+\end{equation*}
+$$\implies \sum_{i=1}^nl_\text{cs}(y^i,\widehat\veta^i) - \sum_{i=1}^nl_\text{cs}(y^i,\veta^i) \geq \sum_{i=1}^n\widehat{\xi_i} - \sum_{i=1}^n\xi_i \qquad\qquad{(b)}$$\\
+Combining $(b)$ with $(a)$ we get 
+$$ \sum_{k=1}^K\norm{\vw^k}_2^2 -\sum_{k=1}^K\norm{\widehat{\vw}^k}_2^2 \geq \sum_{i=1}^n\widehat{\xi_i} - \sum_{i=1}^n\xi_i $$
+$$\implies \sum_{k=1}^K\norm{\vw^k}_2^2 + \sum_{i=1}^n\xi_i \geq \sum_{k=1}^K\norm{\widehat{\vw}^k}_2^2 + \sum_{i=1}^n\widehat{\xi_i}  \ \forall\ \{\xi_i\}$$
+Thus ($\widehat{\vW}, \widehat{\xi_i}$)  is an optimizer for $(P1)$
+
+	
+	
+
+
+
+\end{mlsolution}
+
+\begin{mlsolution}
+We can write $f(\cdot)$ as $f(\vw) = \sum_{i=1}^n$max$(0, 1-y^i\ip{\vw}{x^i}) $. Let us consider $i^{th}$ point.\par
+$f_i(\vw) =$ max$(0, 1-y^i\ip{\vw}{x^i})$
+\[
+\vg_i(\vw) = \vh^i = \begin{cases}
+-y^i\cdot\vx^i &\text{ if }\ y^i\ip{\vw}{\vx^i} < 1\\
+\vzero &\text{ if }\ y^i\ip{\vw}{\vx^i} \geq 1,
+\end{cases}
+\]
+Given inequality is :
+\begin{equation}
+f(\vw') \geq f(\vw) + \ip{\vg}{\vw'-\vw}
+\end{equation}
+\textbf{Case I}
+If $y^i\ip{\vw}{\vx^i} \geq 1$\par
+Then $f_i(\vw) = 0$ and $\vg_i(\vw)=0$. Thus inequality (1) holds trivially for this $i^{th}$ point.\\
+\textbf{Case II} If $y^i\ip{\vw}{\vx^i} < 1$\par
+$$\nabla ( 1-y^i\ip{\vw}{x^i} ) = -y^i\vx^i$$ which is independent of $\vw$\\
+Thus, hessian will be zero $\implies$ hessian will be positive semidefinite $\implies ( 1-y^i\ip{\vw}{x^i} )$ is convex.
+
+Then $f_i(\vw) = 1-y^i\ip{\vw}{\vx^i}$ and $g_i(\vw) = -y^i\vx^i$. Since $( 1-y^i\ip{\vw}{x^i} )$ is convex w.r.t. $\vw$
+ $$1-y^i\ip{\vw^{\prime}}{\vx^i} \geq 1-y^i\ip{\vw}{\vx^i} +  \ip{-y^i\vx^i}{\vw^{\prime}-\vw}$$
+ $$\implies f(\vw^{\prime}) \geq f(\vw)+ \ip{-y^i\vx^i}{\vw^{\prime}-\vw}$$
+ Thus inequality (1) holds in this case also.\par
+Hence we conclude that following inequality holds for each point individually. Thus it will also hold when we sum over all points. Thus, $\vg \in \partial f(\vw)$. \hfill $\square$
+\end{mlsolution}
+
+\begin{mlsolution}
+\textbf{1.6.1}\par
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c|c| } 
+ \hline
+ 	k$\rightarrow$ & 1 & 2 & 3 & 5 & 10 \\ 
+ 	\hline
+ \% error$\rightarrow$ & 24.075 & 21.44 & 19.19 & 17.71 & 16.795\\ 
+ \hline
+\end{tabular}\\
+\vspace{0.2cm}
+Table for 1.6.1
+
+\end{center}
+\begin{figure}[th]%
+\begin{center}
+\includegraphics[scale=0.5]{q6_1}%
+\end{center}
+\caption{Question 1.6.1 : Percentage accuracy vs k}%
+\label{fig:proto}%
+\end{figure}
+\textbf{1.6.2}\par
+Tuned value of $k$ = 12\\
+\textbf{1.6.3}\par
+Accuracy when I used $k=12$ and metric learnt by LMNN = 83.506\%
+\end{mlsolution}
+					
+\end{document}
